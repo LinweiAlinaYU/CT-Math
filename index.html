@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="light" name="color-scheme"/>
+<title>Can You Fix the Broken Line Tool? | CT–Integrated Mathematics · Linwei Yu</title>
+<style>
+:root {
+  --ink:#20364b; --muted:#607589; --subtle:#8092a0; --line:#dfe8ed;
+  --paper:#ffffff; --page:#f5f8fa; --navy:#294963;
+  --blue:#5380b4; --teal:#328c94; --green:#2e8971; --amber:#bb8054; --purple:#7866a0;
+  --shadow:0 10px 34px rgba(29,55,75,.045);
+}
+* {box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--page);color:var(--ink);font-family:Inter,Aptos,"Segoe UI",-apple-system,BlinkMacSystemFont,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit} button{cursor:pointer} button:focus-visible,input:focus-visible{outline:3px solid #74a8bd;outline-offset:3px}
+.hero{background:linear-gradient(122deg,#f7fbfc 0%,#eef5f7 72%,#eaf3f5 100%);border-bottom:1px solid #dce7eb;position:relative;overflow:hidden}
+.hero::after{content:"";width:350px;height:350px;border:1px solid rgba(79,136,161,.1);position:absolute;right:-130px;top:-200px;border-radius:50%;box-shadow:0 0 0 65px rgba(79,136,161,.025),0 0 0 130px rgba(79,136,161,.02);pointer-events:none}
+.hero-inner{max-width:1440px;margin:auto;padding:32px 35px 28px;display:flex;justify-content:space-between;gap:34px;align-items:center;position:relative;z-index:1}
+.eyebrow{font-size:12px;font-weight:850;letter-spacing:2px;color:#397b83}
+h1{font-size:clamp(34px,3.6vw,51px);line-height:1.1;letter-spacing:-1.5px;font-weight:830;margin:9px 0 12px;color:#1e3549}h1 em{font-style:normal;color:#307f88}
+.hero .lede{font-size:15px;color:#536c7c;line-height:1.65;margin:0;max-width:735px}
+.author{border-left:1px solid #cddfe5;padding:4px 0 4px 21px;min-width:265px;display:flex;flex-direction:column;gap:5px;flex-shrink:0}.author .by{font-size:11px;font-weight:850;color:#6b8895;letter-spacing:1.2px;text-transform:uppercase}.author strong{font-size:18px}.author span:last-child{color:#6a7f8d;font-size:13px}
+.wrap{max-width:1440px;margin:auto;padding:24px 34px 18px}
+.scenario{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:26px 27px 24px;box-shadow:var(--shadow);margin-bottom:23px}
+.section-eyebrow{color:#4c8391;font-size:11px;font-weight:850;letter-spacing:1.5px;margin:0 0 8px}
+.scenario-top{display:flex;gap:24px;align-items:end;justify-content:space-between;flex-wrap:wrap;margin-bottom:17px}
+.scenario-top h2{font-size:26px;letter-spacing:-.6px;margin:0 0 7px;line-height:1.2}.scenario-top p{font-size:14px;line-height:1.58;color:var(--muted);margin:0;max-width:860px}
+.formula-pill{background:#eef5f7;color:#315a72;border-radius:12px;border:1px solid #e0ebef;padding:10px 15px;font-family:Georgia,"Cambria Math",serif;font-size:16px;white-space:nowrap}
+.comparison{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.compare-card{background:#fcfefe;border:1px solid #dce7eb;border-radius:17px;padding:17px 18px 16px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.compare-card.error-card{background:#fffdfc;border-color:#e9ded6}
+.compare-head{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:830;border-radius:999px;padding:7px 11px;letter-spacing:.2px}
+.status.works{background:#e9f6ee;color:#26764d}.status.error{background:#fff0e8;color:#a85437}
+.compare-head .pair{font-weight:700;color:#718695;font-size:11px}
+.compare-card svg{display:block;width:100%;height:auto;max-height:269px}.svg-point-label{font-size:15px;font-family:Inter,Aptos,"Segoe UI",Arial,sans-serif;fill:#30495d;font-weight:760}.svg-axis{font-size:13px;font-family:Inter,Aptos,"Segoe UI",Arial,sans-serif;fill:#8aa0ad}
+.compare-result{font-size:13px;line-height:1.5;color:#4a6474;text-align:center;margin:0 0 2px}.compare-result strong{color:#2c4457}
+.challenge{border-radius:14px;border:1px solid #dbe9e6;background:linear-gradient(105deg,#f0f8f7,#f7fafb);padding:16px 18px;display:flex;align-items:flex-start;gap:13px;margin-top:18px}
+.challenge-icon{flex:0 0 30px;height:30px;width:30px;background:#d7ebe9;border-radius:9px;display:grid;place-items:center;color:#2c7b7d;font-weight:900;font-size:17px}
+.challenge > div > strong{display:block;font-size:13px;margin-bottom:4px;color:#2d5b66}.challenge p{margin:0;font-size:14px;line-height:1.55;color:#38566a}.challenge p strong{font-weight:800;color:#275b67}
+.process{display:flex;align-items:center;justify-content:space-between;gap:13px;margin:9px 0 19px;flex-wrap:wrap}
+.process-head h2{font-size:20px;letter-spacing:-.45px;margin:0 0 4px}.process-head p{margin:0;font-size:12px;color:#738695}
+.sequence{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}.sequence .chip{background:#ecf2f5;color:#506c7e;padding:8px 10px;font-size:11px;font-weight:830;border-radius:8px;white-space:nowrap}.sequence .arrow{color:#9aaeb7;font-weight:800}.sequence .chip.evaluate-chip{background:#f1eef8;color:#736096}.sequence .chip small{font-size:9px;font-weight:700}
+.lesson-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.stage{--accent:var(--blue);position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:24px 25px 22px;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.stage::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:var(--accent)}.stage.engage{--accent:var(--blue)}.stage.explore{--accent:var(--teal)}.stage.explain{--accent:var(--green)}.stage.elaborate{--accent:var(--amber)}.stage.evaluate{--accent:var(--purple)}
+.stage-head{display:flex;align-items:flex-start;gap:12px;justify-content:space-between;margin-bottom:13px}.step{display:flex;align-items:center;gap:12px}
+.stepnum{height:44px;width:44px;flex:0 0 auto;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 10%,white);color:var(--accent);border-radius:13px;font-size:19px;font-weight:900}
+.step-label{margin:0 0 3px;font-size:10px;letter-spacing:1.1px;color:var(--accent);text-transform:uppercase;font-weight:830}.step-title{font-size:23px;font-weight:830;letter-spacing:-.45px;line-height:1.12;margin:0}
+.purpose{font-size:11px;font-weight:740;color:var(--accent);line-height:1.4;text-align:right;max-width:165px;margin-top:7px}
+.summary{font-size:14px;line-height:1.6;color:var(--muted);margin:0 0 17px}
+.prompt{background:#f5f8fc;border:1px solid #e2ebf1;border-radius:14px;padding:16px 17px;margin-bottom:16px}
+.caption{font-size:11px;font-weight:850;letter-spacing:1.2px;color:#567fb0;margin:0 0 8px}
+.prompt strong{display:block;font-size:18px;color:#2f4d69;line-height:1.36;letter-spacing:-.25px}
+.points{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.point{background:white;border:1px solid #dce5eb;border-radius:9px;padding:9px 11px;color:#3d5d75;font-size:12px;font-weight:750}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.dot.a{background:var(--blue)}.dot.b{background:var(--amber)}
+.section-label{font-size:10px;color:#8093a2;font-weight:850;letter-spacing:1px;margin:2px 0 9px;text-transform:uppercase}
+.feature-list{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:15px}.feature{border:1px solid #e7edf0;background:#f9fbfc;border-radius:11px;padding:12px 13px;min-height:62px}.feature strong{display:block;font-size:12px;color:#39576e;margin-bottom:4px}.feature span{font-size:12px;color:#5e7688;line-height:1.45}
+.equation-highlight{border:1px solid #e4edf0;background:#f8fbfc;border-radius:12px;padding:13px;text-align:center;margin:0 0 16px}.equation-highlight .formula{font:italic 24px Georgia,"Cambria Math",serif;color:#284256}
+.ct-practices{margin-top:auto;padding-top:14px;display:flex;flex-wrap:wrap;gap:7px;align-items:center;border-top:1px solid #edf1f3}.ct-practices .label{font-size:10px;font-weight:850;letter-spacing:.8px;color:#8596a3;margin-right:3px;text-transform:uppercase}
+.ct-tag{font-size:11px;font-weight:770;border-radius:999px;padding:6px 9px;color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,white);border:1px solid color-mix(in srgb,var(--accent) 20%,white)}
+.svg-frame{background:#fbfdfd;border:1px solid #e5ebef;border-radius:14px;overflow:hidden;margin-bottom:12px;position:relative}
+.graph-label{position:absolute;right:13px;top:11px;background:rgba(255,255,255,.91);border:1px solid #e5edf1;border-radius:8px;color:#607989;font-size:10px;font-weight:800;padding:6px 8px;pointer-events:none}
+svg.graph{width:100%;height:255px;display:block}
+.control{display:grid;grid-template-columns:115px minmax(0,1fr) 31px;gap:9px;align-items:center;margin:6px 0}.control label{font-size:12px;font-weight:760;color:#39566a}.control output{text-align:right;color:#267d84;font-weight:850;font-size:13px}input[type="range"]{width:100%;accent-color:var(--teal)}
+.preset-row{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 13px}
+.preset{border-radius:8px;border:1px solid #d6e4e7;background:white;color:#476878;padding:8px 10px;font-size:11px;font-weight:760}
+.preset:hover,.preset.active{background:#e7f4f3;border-color:#90c8c6;color:#24797f}
+.live-note{font-size:12px;line-height:1.5;color:#58717c;background:#f4faf9;border:1px solid #e2eded;border-radius:10px;padding:10px 12px;margin-bottom:14px}
+.cases{display:grid;gap:9px;margin-bottom:13px}.case{display:grid;grid-template-columns:68px 1fr;gap:8px;align-items:center;border:1px solid #e3ecef;background:#f9fbfc;border-radius:11px;padding:11px 12px}
+.case.active{border-color:#9bcaba;background:#f0f8f4;box-shadow:inset 3px 0 0 var(--green)}.case .tag{font-size:11px;text-transform:uppercase;color:#498978;font-weight:850}.case .cond{font-family:Georgia,"Cambria Math",serif;font-size:16px;color:#2b5260;font-weight:760}.case .desc{font-size:12px;color:#627a87;margin-top:3px}
+.explanation-result{background:#eff8f3;border:1px solid #d3e8db;padding:15px 16px;border-radius:12px;margin-bottom:13px}.explanation-result.warning{background:#fff6f0;border-color:#eed8c6}
+.explanation-result .mini{font-size:10px;color:#477e67;font-weight:850;letter-spacing:1px;text-transform:uppercase}.explanation-result.warning .mini{color:#a76a4b}
+.explanation-result .math{font:22px Georgia,"Cambria Math",serif;line-height:1.35;color:#284453;margin-top:6px;overflow-wrap:anywhere}.explanation-result p{font-size:12px;color:#597280;line-height:1.55;margin:7px 0 0}
+.mode-row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 12px}
+.mode-title{color:#4c6475;font-size:12px;font-weight:830}.toggle{display:flex;gap:4px;background:#f3f6f7;border:1px solid #dce6ea;border-radius:9px;padding:4px}
+.toggle button{background:transparent;border:1px solid transparent;border-radius:7px;color:#667e8c;font-size:11px;font-weight:780;padding:9px 11px}
+.toggle button.active{background:white;border-color:#d8e5ea;color:#2e5c72;box-shadow:0 1px 4px rgba(28,54,72,.06)}
+pre.code{min-height:225px;white-space:pre-wrap;margin:0 0 12px;padding:17px;border-radius:13px;background:#f8fafb;border:1px solid #e1e9ee;color:#314d60;line-height:1.6;font-size:12px;font-family:ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",monospace;overflow:auto;tab-size:4}
+pre.code .kw{color:#237e8a;font-weight:850}pre.code .bug{color:#b35f43;font-weight:850}pre.code .comment{color:#8ba0ab}
+.output{display:flex;gap:10px;border:1px solid #d5e8da;background:#f1faf4;border-radius:11px;padding:13px 14px;margin:0 0 13px}.output.error{background:#fff4ee;border-color:#ebcabc}.output-icon{background:#3d9470;color:#fff;border-radius:50%;height:24px;width:24px;display:grid;place-items:center;flex:0 0 24px;font-size:13px;font-weight:900}.output.error .output-icon{background:#bc7655}.output strong{display:block;font-size:13px;color:#344f5f;margin-bottom:4px}.output p{margin:0;font-size:12px;color:#567180;line-height:1.5}.test-instruction{font-size:12px;color:#627889;margin:0 0 13px;line-height:1.55}
+.evaluate{grid-column:1/-1}.evaluate::before{background:linear-gradient(90deg,var(--blue),var(--teal),var(--green),var(--amber),var(--purple))}
+.evaluate .summary{max-width:1070px}
+.assessment-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.assessment{background:#f9f8fc;border:1px solid #ebe6f1;border-radius:13px;padding:15px}.assessment .n{font-size:11px;color:#7c6a9d;font-weight:850;margin-bottom:6px}.assessment strong{font-size:14px;line-height:1.4;display:block;margin-bottom:7px;color:#35485e}.assessment p{font-size:12px;color:#66778a;line-height:1.57;margin:0}
+.evaluation-bar{padding:14px 16px;border:1px solid #e8e1f1;border-radius:12px;background:#f7f5fb;display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start}
+.evaluation-bar .left,.evaluation-bar .right{font-size:12px;color:#675e80;line-height:1.6}.evaluation-bar strong{color:#554a76}
+.footer{max-width:1440px;margin:0 auto;padding:5px 34px 28px}.footer-inner{border-top:1px solid #dae4e9;padding:20px 2px 4px;display:grid;grid-template-columns:230px 1fr;gap:20px;align-items:start}.credit strong{font-size:13px;color:#2f4c62;display:block;margin-bottom:4px}.credit span{font-size:12px;color:#728999}.citation{max-width:930px;font-size:11px;line-height:1.7;color:#647c8c}.reference-heading{font-weight:850;color:#36566e;font-size:12px;margin-bottom:5px}.citation p{margin:0 0 6px;overflow-wrap:anywhere}.citation .credit-type{font-weight:800;color:#36576e}.citation a{color:#267d8d;word-break:break-word;text-decoration-thickness:1px;text-underline-offset:2px}
+@media(max-width:1150px){.scenario-top{align-items:flex-start}.process{align-items:flex-start}.purpose{display:none}}
+@media(max-width:920px){.hero-inner{align-items:flex-start}.comparison{gap:10px}.stage{padding:20px 19px}.hero .lede{max-width:650px}.author{min-width:225px}}
+@media(max-width:740px){.hero-inner{padding:26px 22px;flex-direction:column;align-items:flex-start;gap:18px}.author{width:100%;border-left:0;border-top:1px solid #dce7eb;padding:12px 0 0}.wrap{padding:20px 18px 13px}.scenario{padding:18px 15px}.scenario-top h2{font-size:23px}.comparison{grid-template-columns:1fr}.lesson-grid{grid-template-columns:1fr}.evaluate{grid-column:auto}.assessment-grid{grid-template-columns:1fr}.evaluation-bar{grid-template-columns:1fr}.footer{padding:8px 18px 25px}.footer-inner{grid-template-columns:1fr;gap:13px}}
+@media(max-width:440px){h1{font-size:35px}.compare-card{padding:12px}.feature-list{grid-template-columns:1fr}.control{grid-template-columns:92px minmax(0,1fr) 28px}.stage{padding:19px 15px}.case{grid-template-columns:58px 1fr}.case .cond{font-size:14px}.sequence .chip{font-size:10px}.scenario-top p{font-size:13px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{body{background:#fff}.stage,.scenario{box-shadow:none;break-inside:avoid}.hero{background:#eef5f7!important}button,input[type=range]{display:none}}
+</style>
+</head>
+<body>
+<header class="hero">
+<div class="hero-inner">
+<div><div class="eyebrow">CT–INTEGRATED MATHEMATICS</div>
+<h1>Can You Fix the <em>Broken Line Tool?</em></h1>
+<p class="lede">A geometry program draws a line through two selected points using the slope formula. It works for some point pairs but fails for others. Can you identify what the rule is missing?</p>
+</div>
+<div aria-label="Presenter" class="author"><span class="by">By</span><strong>Linwei Yu</strong><span>The University of Hong Kong</span></div>
+</div>
+</header>
+<main class="wrap">
+<section aria-labelledby="scenario-title" class="scenario">
+<div class="scenario-top">
+<div><p class="section-eyebrow">THE GEOMETRY CHALLENGE</p><h2 id="scenario-title">One rule. Two different results.</h2>
+<p>A student-built line tool uses the slope formula. Compare what happens when the tool receives these two pairs of points.</p></div>
+<div class="formula-pill">m = (y₂ − y₁) / (x₂ − x₁)</div>
+</div>
+<div class="comparison">
+<div class="compare-card">
+<div class="compare-head"><span class="status works">✓   WORKS</span><span class="pair">A (1, 2) · B (3, 6)</span></div>
+<svg aria-label="A line passes through A (1, 2) and B (3, 6)" role="img" viewbox="0 0 470 282">
+<rect fill="#f9fcfd" height="252" rx="14" stroke="#e5edf1" width="418" x="26" y="14"></rect>
+<line stroke="#e5edf1" stroke-width="1" x1="72" x2="72" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="120" x2="120" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="168" x2="168" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="216" x2="216" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="264" x2="264" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="312" x2="312" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="360" x2="360" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="408" x2="408" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="252" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="222" y2="222"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="192" y2="192"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="162" y2="162"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="132" y2="132"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="102" y2="102"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="72" y2="72"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="42" y2="42"></line>
+<line stroke="#8195a4" stroke-width="1.6" x1="72" x2="426" y1="252" y2="252"></line>
+<line stroke="#8195a4" stroke-width="1.6" x1="72" x2="72" y1="260" y2="25"></line>
+<text class="svg-axis" x="430" y="266">x</text><text class="svg-axis" x="59" y="25">y</text>
+<line stroke="#417ba9" stroke-linecap="round" stroke-width="4.5" x1="72" x2="240.0" y1="252" y2="42"></line><circle cx="120" cy="192" fill="#417ba9" r="7.5" stroke="white" stroke-width="3"></circle><circle cx="216" cy="72" fill="#417ba9" r="7.5" stroke="white" stroke-width="3"></circle><text class="svg-point-label" x="133" y="216">A (1, 2)</text><text class="svg-point-label" x="230" y="77">B (3, 6)</text>
+</svg>
+<p class="compare-result"><strong>The program draws the line.</strong>   y = 2x</p>
+</div>
+<div class="compare-card error-card">
+<div class="compare-head"><span class="status error">!   ERROR</span><span class="pair">A (1, 2) · B (1, 6)</span></div>
+<svg aria-label="No line is drawn for A (1, 2) and B (1, 6) because the formula divides by zero" role="img" viewbox="0 0 470 282">
+<rect fill="#f9fcfd" height="252" rx="14" stroke="#e5edf1" width="418" x="26" y="14"></rect>
+<line stroke="#e5edf1" stroke-width="1" x1="72" x2="72" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="120" x2="120" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="168" x2="168" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="216" x2="216" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="264" x2="264" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="312" x2="312" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="360" x2="360" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="408" x2="408" y1="27" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="252" y2="252"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="222" y2="222"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="192" y2="192"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="162" y2="162"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="132" y2="132"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="102" y2="102"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="72" y2="72"></line><line stroke="#e5edf1" stroke-width="1" x1="72" x2="415" y1="42" y2="42"></line>
+<line stroke="#8195a4" stroke-width="1.6" x1="72" x2="426" y1="252" y2="252"></line>
+<line stroke="#8195a4" stroke-width="1.6" x1="72" x2="72" y1="260" y2="25"></line>
+<text class="svg-axis" x="430" y="266">x</text><text class="svg-axis" x="59" y="25">y</text>
+<circle cx="120" cy="192" fill="#b96543" r="7.5" stroke="white" stroke-width="3"></circle><circle cx="120" cy="72" fill="#b96543" r="7.5" stroke="white" stroke-width="3"></circle><text class="svg-point-label" x="133" y="216">A (1, 2)</text><text class="svg-point-label" x="134" y="77">B (1, 6)</text><g><rect fill="#fff3ee" height="74" rx="12" stroke="#ecc4b1" width="166" x="258" y="143"></rect><text fill="#9f5134" font-size="14" font-weight="800" text-anchor="middle" x="341" y="174">Division by zero</text><text fill="#9f5134" font-size="13" text-anchor="middle" x="341" y="197">(6 − 2) / (1 − 1)</text></g>
+</svg>
+<p class="compare-result"><strong>The program cannot calculate the slope.</strong>   No line is drawn.</p>
+</div>
+</div>
+<div class="challenge"><span class="challenge-icon">?</span><div><strong>THE CHALLENGE</strong><p>Find out why the program fails. Develop a rule that can draw the correct line through any two <strong>distinct</strong> points and recognize when the two selected points coincide.</p></div></div>
+</section>
+<section aria-label="Learning sequence" class="process"><div class="process-head"><h2>From the problem to a computational solution</h2><p>CT–STEM pedagogical framework applied to a mathematics task</p></div>
+<div aria-label="Engage, Explore, Explain, Elaborate, and Evaluate across the lesson" class="sequence">
+<span class="chip">01 · ENGAGE</span><span class="arrow">→</span><span class="chip">02 · EXPLORE</span><span class="arrow">↔</span><span class="chip">03 · EXPLAIN</span><span class="arrow">→</span><span class="chip">04 · ELABORATE</span><span class="arrow">↕</span><span class="chip evaluate-chip">05 · EVALUATE <small>THROUGHOUT</small></span>
+</div>
+</section>
+<div class="lesson-grid">
+<section aria-labelledby="engage-title" class="stage engage" id="engage">
+<div class="stage-head"><div class="step"><span class="stepnum">01</span><div><p class="step-label">Frame the problem</p><h2 class="step-title" id="engage-title">Engage</h2></div></div><span class="purpose">Identify what the tool needs</span></div>
+<p class="summary">The tool receives the coordinates of two points. Clarify the required inputs and outputs, and identify the mathematical cases that the solution must address.</p>
+<div class="prompt"><p class="caption">DESIGN TASK</p><strong>How can a program draw the line through two selected points without failing on special cases?</strong><div class="points"><span class="point"><span class="dot a"></span>A (1, 2)</span><span class="point"><span class="dot b"></span>B (3, 6)</span></div></div>
+<p class="section-label">Problem information</p>
+<div class="feature-list">
+<div class="feature"><strong>Inputs</strong><span>Two coordinate pairs, A(x₁, y₁) and B(x₂, y₂)</span></div>
+<div class="feature"><strong>Required output</strong><span>A line equation for distinct points; a message for coincident points</span></div>
+<div class="feature"><strong>Mathematical knowledge</strong><span>Slope and equations of straight lines</span></div>
+<div class="feature"><strong>Special cases</strong><span>Vertical lines and coincident points</span></div>
+</div>
+<div class="equation-highlight"><span class="formula">m = (y₂ − y₁) / (x₂ − x₁)</span></div>
+<div class="ct-practices"><span class="label">CT practices</span><span class="ct-tag">Abstraction</span><span class="ct-tag">Decomposition</span></div>
+</section>
+<section aria-labelledby="explore-title" class="stage explore" id="explore">
+<div class="stage-head"><div class="step"><span class="stepnum">02</span><div><p class="step-label">Investigate the cases</p><h2 class="step-title" id="explore-title">Explore</h2></div></div><span class="purpose">Collect and examine observations</span></div>
+<p class="summary">Keep A(1, 2) fixed. Move B to investigate how changes in its coordinates affect the slope and the line determined by the two points.</p>
+<div class="svg-frame"><div class="graph-label">MATHEMATICAL REFERENCE</div><svg aria-label="Mathematical reference graph showing the line through A and B, when the two points are distinct" class="graph" id="plot" role="img" viewbox="0 0 640 390"></svg></div>
+<div class="control"><label for="bx">Point B · x</label><input id="bx" max="7" min="0" step="1" type="range" value="3"/><output for="bx" id="vx">3</output></div>
+<div class="control"><label for="by">Point B · y</label><input id="by" max="8" min="0" step="1" type="range" value="6"/><output for="by" id="vy">6</output></div>
+<div aria-label="Example pairs" class="preset-row"><button class="preset active" data-x="3" data-y="6" type="button">Nonvertical</button><button class="preset" data-x="1" data-y="6" type="button">Vertical</button><button class="preset" data-x="1" data-y="2" type="button">Coincident</button><button class="preset" data-x="3" data-y="2" type="button">Horizontal</button></div>
+<div aria-live="polite" class="live-note" id="explore-note">The two points have different x-coordinates; the slope is defined.</div>
+<div class="ct-practices"><span class="label">CT practices</span><span class="ct-tag">Data Collection &amp; Analysis</span><span class="ct-tag">Data Representation</span></div>
+</section>
+<section aria-labelledby="explain-title" class="stage explain" id="explain">
+<div class="stage-head"><div class="step"><span class="stepnum">03</span><div><p class="step-label">Represent the findings</p><h2 class="step-title" id="explain-title">Explain</h2></div></div><span class="purpose">Clarify the mathematical conditions</span></div>
+<p class="summary">Organize the observations into three cases. Explain when the slope formula is valid and when the two points determine a unique line.</p>
+<div aria-label="Three mathematical cases" class="cases">
+<div class="case active" id="case-normal"><span class="tag">CASE A</span><div><div class="cond">x₁ ≠ x₂</div><div class="desc">Nonvertical line · Slope defined</div></div></div>
+<div class="case" id="case-vertical"><span class="tag">CASE B</span><div><div class="cond">x₁ = x₂, y₁ ≠ y₂</div><div class="desc">Vertical line · Slope undefined</div></div></div>
+<div class="case" id="case-same"><span class="tag">CASE C</span><div><div class="cond">x₁ = x₂, y₁ = y₂</div><div class="desc">Coincident points · No unique line</div></div></div>
+</div>
+<div aria-live="polite" class="explanation-result" id="math-result"><div class="mini" id="math-state">Slope defined</div><div class="math" id="math-expression">m = (6 − 2) / (3 − 1) = 2</div><p id="math-explanation">The unique line is y = 2x.</p></div>
+<div class="ct-practices"><span class="label">CT practice</span><span class="ct-tag">Data Representation</span></div>
+</section>
+<section aria-labelledby="elaborate-title" class="stage elaborate" id="elaborate">
+<div class="stage-head"><div class="step"><span class="stepnum">04</span><div><p class="step-label">Develop and improve a solution</p><h2 class="step-title" id="elaborate-title">Elaborate</h2></div></div><span class="purpose">Construct, test, debug, and revise</span></div>
+<p class="summary">Compare the slope-only rule with a rule that checks the input conditions. Use the point pairs in Explore to test what each rule returns, then explain the necessary changes.</p>
+<div class="mode-row"><span class="mode-title">Select a line-drawing rule</span><div aria-label="Algorithm variant" class="toggle" role="group"><button aria-pressed="true" class="active" data-algorithm="buggy" type="button">Slope-only</button><button aria-pressed="false" data-algorithm="correct" type="button">Complete rule</button></div></div>
+<pre aria-label="Algorithm pseudocode" class="code" id="code"></pre>
+<div aria-live="polite" class="output" id="algorithm-output" role="status"><span class="output-icon" id="output-icon">✓</span><div><strong id="output-title">Program result</strong><p id="output-text"></p></div></div>
+<p class="test-instruction">Test a nonvertical line, a vertical line, and coincident points. Which input reveals the problem with the slope-only rule?</p>
+<div class="ct-practices"><span class="label">CT practices</span><span class="ct-tag">Algorithmic Thinking</span><span class="ct-tag">Automation</span><span class="ct-tag">Modeling</span><span class="ct-tag">Testing</span><span class="ct-tag">Debugging</span><span class="ct-tag">Iteration</span><span class="ct-tag">Generalization</span></div>
+</section>
+<section aria-labelledby="evaluate-title" class="stage evaluate" id="evaluate">
+<div class="stage-head"><div class="step"><span class="stepnum">05</span><div><p class="step-label">Evidence-based evaluation across all phases</p><h2 class="step-title" id="evaluate-title">Evaluate</h2></div></div><span class="purpose">Evidence, feedback, and further learning</span></div>
+<p class="summary">Use evidence from each phase to examine students’ mathematical understanding, CT practices, and the quality of their developing solution. Evaluation informs feedback and may lead to further exploration, explanation, or revision.</p>
+<div class="assessment-grid">
+<div class="assessment"><div class="n">01 · MATHEMATICAL UNDERSTANDING</div><strong>Explanation of mathematical conditions</strong><p>Distinguish nonvertical, vertical, and coincident cases, and explain when the slope formula is defined.</p></div>
+<div class="assessment"><div class="n">02 · CT PRACTICES</div><strong>Use of computational reasoning</strong><p>Identify relevant information, represent cases, develop conditional rules, and test and debug solutions.</p></div>
+<div class="assessment"><div class="n">03 · SOLUTION QUALITY</div><strong>Correctness and scope of the rule</strong><p>Check that the rule handles all three cases and explain why the conditions cover every pair of input points.</p></div>
+</div>
+<div class="evaluation-bar"><div class="left"><strong>Evidence:</strong> Students’ observations, explanations, proposed rules, test cases, and revisions.</div><div class="right"><strong>Feedback:</strong> Return to Explore, Explain, or Elaborate when further inquiry or refinement is needed.</div></div>
+</section>
+</div>
+</main>
+<footer class="footer"><div class="footer-inner"><div class="credit"><strong>By Linwei Yu</strong><span>The University of Hong Kong</span></div>
+<div class="citation"><div class="reference-heading">Inspired by</div>
+<p><span class="credit-type">Framework:</span> Yu, L., Li, Z., &amp; Oon, P. T. <em>Teacher perspectives on implementing a computational thinking framework in STEM education</em>. Under review at <em>Computers &amp; Education Open</em>.</p>
+<p><span class="credit-type">Mathematics task:</span> Chytas, C., van Borkulo, S. P., Drijvers, P., Barendsen, E., &amp; Tolboom, J. L. J. (2024). Computational thinking in secondary mathematics education with GeoGebra: Insights from an intervention in calculus lessons. <em>Digital Experiences in Mathematics Education, 10</em>(2), 228–259. <a href="https://doi.org/10.1007/s40751-024-00141-0" rel="noopener noreferrer" target="_blank">https://doi.org/10.1007/s40751-024-00141-0</a></p></div></div></footer>
+<script>
+'use strict';
+const sliderX = document.getElementById('bx');
+const sliderY = document.getElementById('by');
+const plot = document.getElementById('plot');
+const presets = Array.from(document.querySelectorAll('.preset'));
+const modes = Array.from(document.querySelectorAll('[data-algorithm]'));
+let algorithm = 'buggy';
+function svgEl(tag, attrs, t) {
+  const n=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,String(v)));
+  if(t!==undefined) n.textContent=String(t);
+  return n;
+}
+function gcd(a,b) {a=Math.abs(a);b=Math.abs(b);while(b){const r=a%b;a=b;b=r;} return a||1;}
+function rational(n,d){if(d===0)return 'undefined';if(d<0){n=-n;d=-d;}const g=gcd(n,d);n/=g;d/=g;return d===1?String(n):n+'/'+d;}
+function equationFor(by,bx){
+  // A=(1,2), B=(bx,by); valid here only when bx != 1.
+  let dy=by-2,dx=bx-1;if(dx<0){dx=-dx;dy=-dy;}
+  const bnum=2*dx-dy;
+  if(dy===0)return 'y = 2';
+  let m=rational(dy,dx);
+  let term=m==='1'?'x':m==='-1'?'−x':m.startsWith('-')?'−'+(m.slice(1).includes('/')?'('+m.slice(1)+')':m.slice(1))+'x':(m.includes('/')?'('+m+')':m)+'x';
+  let c=bnum===0?'':bnum>0?' + '+rational(bnum,dx):' − '+rational(-bnum,dx);
+  return 'y = '+term+c;
+}
+function currentCase(bx,by){return bx===1&&by===2?'coincident':bx===1?'vertical':'nonvertical';}
+function setPreset(x,y){sliderX.value=String(x);sliderY.value=String(y);render();}
+function drawGraph(bx,by,kind){
+  plot.replaceChildren();
+  const X=x=>58+72*x,Y=y=>341-38*y;
+  const g=svgEl('g',{});plot.appendChild(g);
+  for(let x=0;x<=7;x++){g.appendChild(svgEl('line',{x1:X(x),y1:Y(8),x2:X(x),y2:Y(0),stroke:'#e2eaee','stroke-width':1}));g.appendChild(svgEl('text',{x:X(x)-4,y:366,fill:'#8799a6','font-size':12},x));}
+  for(let y=0;y<=8;y++){g.appendChild(svgEl('line',{x1:X(0),y1:Y(y),x2:X(7),y2:Y(y),stroke:'#e2eaee','stroke-width':1}));g.appendChild(svgEl('text',{x:32,y:Y(y)+4,fill:'#8799a6','font-size':12},y));}
+  g.appendChild(svgEl('line',{x1:X(0),y1:Y(0),x2:X(7)+11,y2:Y(0),stroke:'#8ba1af','stroke-width':1.5}));
+  g.appendChild(svgEl('line',{x1:X(0),y1:Y(0)+8,x2:X(0),y2:Y(8)-9,stroke:'#8ba1af','stroke-width':1.5}));
+  g.appendChild(svgEl('text',{x:582,y:357,fill:'#7c93a0','font-size':13},'x'));
+  g.appendChild(svgEl('text',{x:44,y:25,fill:'#7c93a0','font-size':13},'y'));
+  // Mathematical reference graph: always draw the mathematically correct line,
+  // independent of which computational rule is being tested in Elaborate.
+  if(kind!=='coincident'){
+    const dx=bx-1,dy=by-2;
+    const paths=[];
+    if(dx!==0) for(const x of [0,7]){const t=(x-1)/dx,y=2+t*dy;if(y>=0&&y<=8) paths.push([x,y]);}
+    if(dy!==0) for(const y of [0,8]){const t=(y-2)/dy,x=1+t*dx;if(x>=0&&x<=7) paths.push([x,y]);}
+    let best=null,bestD=-1;
+    for(let i=0;i<paths.length;i++)for(let j=i+1;j<paths.length;j++){const d=(paths[i][0]-paths[j][0])**2+(paths[i][1]-paths[j][1])**2;if(d>bestD){bestD=d;best=[paths[i],paths[j]];}}
+    if(best)g.appendChild(svgEl('line',{x1:X(best[0][0]),y1:Y(best[0][1]),x2:X(best[1][0]),y2:Y(best[1][1]),stroke:'#328c94','stroke-width':4,'stroke-linecap':'round'}));
+  }
+  g.appendChild(svgEl('circle',{cx:X(1),cy:Y(2),r:8,fill:'#5380b4',stroke:'#fff','stroke-width':2.5}));
+  g.appendChild(svgEl('circle',{cx:X(bx),cy:Y(by),r:8,fill:'#bb8054',stroke:'#fff','stroke-width':2.5}));
+  g.appendChild(svgEl('text',{x:X(1)+12,y:Y(2)+25,fill:'#4d75a8','font-size':14,'font-weight':800},'A'));
+  g.appendChild(svgEl('text',{x:Math.min(595,X(bx)+12),y:Math.max(25,Y(by)-14),fill:'#a9714c','font-size':14,'font-weight':800},'B'));
+}
+const completeCode=`<span class="kw">IF</span> x1 == x2:
+    <span class="kw">IF</span> y1 == y2:
+        RETURN "No unique line"
+    <span class="kw">ELSE:</span>
+        RETURN "x = x1"
+<span class="kw">ELSE:</span>
+    m = (y2 − y1) / (x2 − x1)
+    b = y1 − m*x1
+    RETURN "y = m*x + b"`;
+const slopeOnlyCode=`<span class="comment"># The program assumes every line has a slope</span>
+<span class="bug">m = (y2 − y1) / (x2 − x1)</span>
+b = y1 − m*x1
+RETURN "y = m*x + b"
+
+<span class="comment"># No check for equal x-coordinates</span>`;
+function render(){
+  const bx=Number(sliderX.value),by=Number(sliderY.value),kind=currentCase(bx,by);
+  document.getElementById('vx').textContent=bx;
+  document.getElementById('vy').textContent=by;
+  drawGraph(bx,by,kind);
+  presets.forEach(b=>{const active=Number(b.dataset.x)===bx&&Number(b.dataset.y)===by;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+  document.getElementById('case-normal').classList.toggle('active',kind==='nonvertical');
+  document.getElementById('case-vertical').classList.toggle('active',kind==='vertical');
+  document.getElementById('case-same').classList.toggle('active',kind==='coincident');
+  const result=document.getElementById('math-result');result.classList.toggle('warning',kind!=='nonvertical');
+  let line,formula,description,note,state;
+  if(kind==='coincident'){
+    line='No unique line';formula='m = (2 − 2) / (1 − 1) = 0/0';
+    description='The points coincide. Infinitely many lines pass through this point, so the input does not determine a unique line.';
+    note='A and B coincide. There is no unique line through two identical selections.';state='Coincident points';
+  }else if(kind==='vertical'){
+    line='x = 1';formula='m = ('+by+' − 2) / (1 − 1) → undefined';
+    description='The points are distinct and determine the vertical line x = 1. Its slope is undefined because the denominator is zero.';
+    note='The x-coordinates agree, but the y-coordinates differ. The resulting line is vertical.';state='Vertical line';
+  }else{
+    line=equationFor(by,bx);formula='m = ('+by+' − 2) / ('+bx+' − 1) = '+rational(by-2,bx-1);
+    description='The two points have different x-coordinates. The unique line is '+line+'.';
+    note=by===2?'The y-coordinates agree, so the line is horizontal.':'Different x-coordinates give a defined slope.';state='Slope defined';
+  }
+  document.getElementById('explore-note').textContent=note;
+  document.getElementById('math-state').textContent=state;
+  document.getElementById('math-expression').textContent=formula;
+  document.getElementById('math-explanation').textContent=description;
+  document.getElementById('code').innerHTML=algorithm==='correct'?completeCode:slopeOnlyCode;
+  const error=algorithm==='buggy'&&kind!=='nonvertical';
+  const box=document.getElementById('algorithm-output');box.classList.toggle('error',error);
+  document.getElementById('output-icon').textContent=error?'!':'✓';
+  if(error){
+    document.getElementById('output-title').textContent='This rule fails for these inputs';
+    document.getElementById('output-text').textContent=kind==='vertical'?'Division by zero: the slope-only rule does not return an equation for the vertical line.':'The expression 0/0 is undefined. Coincident points must be handled separately.';
+  }else if(algorithm==='buggy'){
+    document.getElementById('output-title').textContent='Works for this pair of points';
+    document.getElementById('output-text').textContent='Returns '+line+'. Test a vertical line or coincident points to expose the missing case checks.';
+  }else{
+    document.getElementById('output-title').textContent='Complete rule handles this case';
+    document.getElementById('output-text').textContent='Returns '+line+'. Change Point B to check another input.';
+  }
+  modes.forEach(b=>{const active=b.dataset.algorithm===algorithm;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+}
+presets.forEach(b=>b.addEventListener('click',()=>setPreset(Number(b.dataset.x),Number(b.dataset.y))));
+modes.forEach(b=>b.addEventListener('click',()=>{algorithm=b.dataset.algorithm;render();}));
+sliderX.addEventListener('input',render);sliderY.addEventListener('input',render);
+render();
+</script>
+</body></html>
